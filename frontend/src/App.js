@@ -9,17 +9,14 @@ import Toast from "./Components/Toast/Toast";
 import { useDispatch, useSelector } from "react-redux";
 import {
   apicallloginDetails,
+  setOnlineUsers,
 } from "./redux/AuthReducers/AuthReducer";
 import { io } from "socket.io-client";
-import {
-  setOnlineUsers,
-} from "./redux/Conversationreducer/ConversationReducer";
+
 import LoadingData from "./Components/Toast/Loading";
 import { socket_io } from "./Utils";
 
-const LandingPage = React.lazy(() =>
-  import("./Components/LandingPage/LandingPage")
-);
+
 const SignUp = React.lazy(() => import("./Components/Signup/SignUp"));
 const Login = React.lazy(() => import("./Components/Login/Login"));
 const ForgotPassword = React.lazy(() =>
@@ -123,7 +120,6 @@ const App = () => {
           <Route path="/signup" Component={LoginAuth(SignUp)} />
           <Route path="/login" Component={LoginAuth(Login)} />
           <Route path="/forgotpassword" Component={LoginAuth(ForgotPassword)} />
-          <Route path="/" element={<LandingPage />} />
           <Route path="*" element={<NoMatch />} />
           <Route path="/home" Component={AuthHoc(Home)} />
         </Routes>

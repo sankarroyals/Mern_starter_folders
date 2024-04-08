@@ -10,7 +10,7 @@ export const apiCallSlice = createSlice(
     name: 'apiCall',
     initialState: {
       loginDetails: {},
-
+      onlineUsers: [],
       ToastDetails: {
         message: '',
         bgColor: '',
@@ -29,7 +29,10 @@ export const apiCallSlice = createSlice(
       },
       setLoading: (state, action) => {
         state.LoadingDetails = action.payload;
-      }
+      },
+      setOnlineUsers: (state, action) => {
+        state.onlineUsers = action.payload;
+      },
     }
   });
 
@@ -65,7 +68,7 @@ export const apicallloginDetails = () => async (dispatch) => {
   }
 }
 
-export const { setLoginData, setToast, setLoading } = apiCallSlice.actions;
+export const { setLoginData, setToast, setOnlineUsers, setLoading } = apiCallSlice.actions;
 
 // this is for configureStore
 export default apiCallSlice.reducer;

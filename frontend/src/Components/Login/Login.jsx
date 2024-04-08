@@ -68,8 +68,9 @@ const Login = () => {
   // const isPasswordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/.test(password);
 
   const isFormValid =
-    (loginType === "email" && isEmailValid && isPasswordValid) ||
-    (loginType === "mobile" && mobileVerified);
+    (loginType === "email" && isEmailValid && isPasswordValid)
+    // ||
+    // (loginType === "mobile" && mobileVerified);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -80,7 +81,7 @@ const Login = () => {
       email: null,
       emailOtp: null,
       mobile: null,
-      mobileOtp: null,
+      // mobileOtp: null,
       name: null,
       password: null,
       isMobileOtpSent: null,
@@ -136,7 +137,7 @@ const Login = () => {
     e.preventDefault();
     await ApiServices.verifyOtp({
       email: `+91${mobile}`,
-      otp: mobileOtp,
+      // otp: mobileOtp,
     })
       .then((res) => {
         dispatch(
@@ -269,7 +270,7 @@ const Login = () => {
                     name="tabGroup1"
                     class="tab"
                   /> */}
-                  <label for="tab2">Mobile</label>
+                  {/* <label for="tab2">Mobile</label> */}
                 </div>
                 <form action="">
                   {loginType === "email" ? (
@@ -307,7 +308,7 @@ const Login = () => {
                             isMobileValid !== null &&
                             (isMobileValid ? "valid" : "invalid")
                           }
-                          disabled={mobileVerified}
+                          // disabled={mobileVerified}
                           placeholder="Mobile Number"
                           autoComplete="off"
                           name="mobile"

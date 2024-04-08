@@ -2,48 +2,24 @@ import React, { useState, useEffect, useRef } from "react";
 import "./Navbar.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { ApiServices } from "../../Services/ApiServices";
-import axiosInstance from "../axiosInstance";
-import { setLoginData, setToast } from "../../redux/AuthReducers/AuthReducer";
-import { ToastColors } from "../Toast/ToastColors";
-import { Howl } from "howler";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { jwtDecode } from "jwt-decode";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import BallotOutlinedIcon from "@mui/icons-material/BallotOutlined";
-import ThreePOutlinedIcon from "@mui/icons-material/ThreePOutlined";
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import PlagiarismOutlinedIcon from "@mui/icons-material/PlagiarismOutlined";
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import { io } from "socket.io-client";
 
 import Box from "@mui/material/Box";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import {
-  getAllNotifications,
-  setMessageCount,
-  setNotification,
-} from "../../redux/Conversationreducer/ConversationReducer";
-import { Drawer, Tab, Tabs, Typography } from "@mui/material";
-import MessageRequest from "../Conversation/Notification/MessageRequest";
-import { format } from "timeago.js";
+
+import { Drawer } from "@mui/material";
 import useWindowDimensions from "../Common/WindowSize";
 import { socket_io } from "../../Utils";
 import ProfileImageUpdate from "./ProfileImageUpdate";
@@ -273,7 +249,7 @@ const Navbar = () => {
         className="logo"
         style={{ cursor: "pointer" }}
         onClick={() => {
-          navigate("/");
+          navigate("/home");
         }}
       >
         <img
