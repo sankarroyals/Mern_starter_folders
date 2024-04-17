@@ -1,9 +1,44 @@
 .login-main-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  background-color: #fafafa;
-  height: 100vh;
+  justify-content: space-between;
+  padding: 30px;
+  background-color:var(--signup-bg) ;
+    height: 91.4vh;
+}
+
+.signup-left-container {
+  color: white;
+  width: 45%;
+  padding: 100px;
+  display: flex;
+  flex-direction: row;
+}
+.signup-left-container p{
+  font-size: 24px;
+}
+.signup-left-content{
+  width: 100%;
+  margin: 20px 0;
+}
+.checks{
+   line-height: 34px; 
+}
+.tick {
+  display: inline-block;
+  width: 18px; 
+  height: 18px; 
+  line-height: 20px; 
+  border-radius: 50%; 
+  background-color: #4caf50; 
+  text-align: center;
+  color: white; 
+  font-size: 10px;
+}
+.signup-image-container img{
+height: 300px;
+width: 300px;
 }
 
 .login-form-container {
@@ -13,7 +48,7 @@
   border: 1px solid #ccc;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-left: 200px;
+  margin-left: 100px;
 }
 
 .login-image-container {
@@ -34,6 +69,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+   margin-left: 100px;
 }
 
 .login-page {
@@ -43,6 +79,8 @@
   height: fit-content;
   padding-top: 25px;
   padding-bottom: 30px;
+  border-radius: 15px;
+ 
 }
 
 /* header style */
@@ -61,7 +99,7 @@
   margin-bottom: 15px;
 }
 
-.login-page .login-header > p {
+.login-page .login-header > p, .signup-page .login-header > p {
   font-weight: bold;
   color: #8e8e8e;
   font-size: 18px;
@@ -178,6 +216,11 @@ input {
   font-size: 18px;
 }
 
+.login-hero .login-header p{
+  color: black;
+  padding: 5px;
+}
+
 /* login-footer style */
 /* .login-footer {
   padding: 40px 0;
@@ -224,8 +267,9 @@ input {
 
 @media only screen and (max-width: 400px) {
   .login-page {
-    width: 250px;
+    width: 300px;
     background-color: #fafafa;
+     padding: 20px;
   }
 
   .login-page .login-header {
@@ -244,6 +288,7 @@ input {
   .login-page .login-container input {
     padding: 10px 5px;
     margin: 5px 0;
+     width: 95% !important;
   }
 
   .login-page .login-footer {
@@ -440,6 +485,28 @@ input {
 .login-otp-button {
   width: 40px;
   padding: 5px;
+}
+
+@media (max-width: 768px) {
+  .login-main-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+   height: 100%;
+}
+.signup-left-container {
+  color: white;
+  width: 100%;
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+}
+.login-hero {
+  /* padding: 30px; */
+}
+.login-form-section {
+   margin-left: 0px;
+}
 }
 
 

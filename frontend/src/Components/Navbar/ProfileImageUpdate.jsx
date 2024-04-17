@@ -8,9 +8,10 @@ import axiosInstance from '../axiosInstance';
 import { setLoginData, setToast } from '../../redux/AuthReducers/AuthReducer';
 import { jwtDecode } from 'jwt-decode';
 import { ToastColors } from '../Toast/ToastColors';
+import NameGenerator from '../Common/NameGenerator';
 
 const ProfileImageUpdate = ({ open, setOpen}) => {
-    const { email, image, user_id } = useSelector(
+    const { email, image, user_id, userName } = useSelector(
         (store) => store.auth.loginDetails
       );
     const handleClose = () => {
@@ -105,7 +106,7 @@ const ProfileImageUpdate = ({ open, setOpen}) => {
     
       };
   return (
-    <Dialog
+    <Dialog fullWidth
       open={open}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
@@ -121,20 +122,17 @@ const ProfileImageUpdate = ({ open, setOpen}) => {
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           <div>
-            <img
+            {(image !== undefined && image !== '') ? <img
               style={{
-                borderRadius: "50%",
+                borderRadius: "10%",
                 cursor: "pointer",
-                height: "150px",
-                width: "150px",
+                maxWidth: "100%",
+                height: '250px', width: '250px',
+                display: 'block'
               }}
-              src={
-                image !== undefined && image !== ""
-                  ? image
-                  : "/profile.png"
-              }
+              src={image}
               alt="Profile"
-            />
+            /> : <NameGenerator userName={userName} sizes={{ height: '80px', width: '80px', fontSize: '26px' }} />}
           </div>
 
           <div>

@@ -10,13 +10,10 @@ import '../Login/Login.css'
 const ResetPassword = () => {
   const [inputs, setInputs] = useState({
     email: null,
-    mobile: null,
     otp: null,
     newPassword: null,
     confirmPassword: null,
     isEmailValid: null,
-    mobileOtp: null,
-    isMobileValid: null,
     isPasswordValid: null,
   });
 
@@ -24,8 +21,6 @@ const ResetPassword = () => {
     email,
     newPassword,
     confirmPassword,
-    isMobileValid,
-    mobileOtp,
     otp,
     isEmailValid,
     isPasswordValid,
@@ -49,59 +44,20 @@ const ResetPassword = () => {
     }
   };
 
-  const handleLoginTypeChange = (type) => {
-    setLoginType(type);
-    setemailVerified(false)
-    setIsMobileValid(null)
-    setmobileVerified(false)
-    setMobile('')
-    setInputs({
-      email: null,
-      emailOtp: null,
-      mobileOtp: null,
-      name: null,
-      password: null,
-      isMobileOtpSent: null,
-      isEmailOtpSent: null,
-      emailVerified: null,
-      mobileVerified: false,
-      isEmailValid: null,
-      isMobileValid: null,
-      isNameValid: null,
-      isPasswordValid: null,
-    });
-    setOtpVisible(false);
-  };
   const [loginType, setLoginType] = useState("email");
   const [otpVisible, setOtpVisible] = useState(false);
   const [emailVerified, setemailVerified] = useState(false);
-  const [mobileVerified, setmobileVerified] = useState(false);
-
-  const [mobile, setMobile] = useState('')
-  const [mobileValid, setIsMobileValid] = useState(null);
 
 
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
-  // const handleLoginTypeChange = (type) => {
-  //   setLoginType(type);
-  //   setEmail("");
-  //   setMobile("");
-  //   setOtp("");
-  //   setNewPassword("");
-  //   setConfirmPassword("");
-  //   setOtpVisible(false);
-  //   setIsMobileValid(false);
-  // };
-
   const handleResetPassword = async (e) => {
     e.preventDefault();
     e.target.disabled = true;
     const obj = {
       email: email,
-      phone: mobile,
       type: loginType,
       password: newPassword,
     };
@@ -129,36 +85,6 @@ const ResetPassword = () => {
   };
 
 
-  const sendMobileOtpF = async (e) => {
-    e.preventDefault();
-    e.target.disabled = true;
-    await ApiServices.sendMobileOtp({
-      phone: `+91${mobile}`, type: 'forgot'
-    })
-      .then((res) => {
-        dispatch(
-          setToast({
-            message: "OTP sent successfully !",
-            bgColor: ToastColors.success,
-            visible: "yes",
-          })
-        );
-        // setIsEmailOtpSent(true);
-        setInputs((prev) => ({ ...prev, isMobileOtpSent: true }));
-        setOtpVisible(true)
-      })
-      .catch((err) => {
-        dispatch(
-          setToast({
-            message: "OTP sent failed !",
-            bgColor: ToastColors.failure,
-            visible: "yes",
-          })
-        );
-        e.target.disabled = true;
-      });
-
-  };
   const handleGetOtp = async (e) => {
     e.target.disabled = true;
     if (loginType === "email") {
@@ -194,16 +120,14 @@ const ResetPassword = () => {
           })
         );
       }, 4000);
-    } else {
-      sendMobileOtpF(e)
     }
   };
 
   const verifyOtp = async (e) => {
     e.preventDefault();
     await ApiServices.verifyOtp({
-      email: loginType == 'email' ? email : `+91${mobile}`,
-      otp: loginType == 'email' ? otp : mobileOtp,
+      email: email,
+      otp: otp,
     })
       .then((res) => {
         dispatch(
@@ -217,8 +141,6 @@ const ResetPassword = () => {
         if (loginType == 'email') {
           document.getElementById("emailVerify").style.display = "none";
           setemailVerified(true);
-        } else {
-          setmobileVerified(true)
         }
       })
       .catch((err) => {
@@ -234,10 +156,6 @@ const ResetPassword = () => {
 
   };
 
-  const handleMobileChange = (value) => {
-    setMobile(value);
-    setIsMobileValid(/^[0-9]{10}$/.test(value));
-  };
 
   return (
     <main className="login-main-container">
@@ -245,38 +163,13 @@ const ResetPassword = () => {
         <div className="login-form-section">
           <div class="login-page">
             <div class="login-header">
-              <img
-                class="login-logo"
-                src="logo.png"
-                alt="Your Alt Text"
-                onClick={() => {
-                  navigate("/home");
-                }}
-              />
               <p>Change your password here!</p>
             </div>
             <div class="login-container">
               <div class="tab-wrap">
-                <input
-                  type="radio"
-                  id="tab1"
-                  name="tabGroup1"
-                  class="tab"
-                  checked={loginType === "email"}
-                  onClick={() => handleLoginTypeChange("email")}
-                />
-                {/* <label for="tab1">Email</label>
-                <input
-                  onClick={() => handleLoginTypeChange("mobile")}
-                  type="radio"
-                  id="tab2"
-                  name="tabGroup1"
-                  class="tab"
-                />
-                <label for="tab2">Mobile</label> */}
               </div>
               <form action="">
-                {loginType === "email" ? (
+
                   <>
                     <input
                       type="text"
@@ -289,16 +182,8 @@ const ResetPassword = () => {
                       disabled={emailVerified}
                       onChange={handleChanges}
                     />
-                    {/* {emailVerified === true && (
-                      <img
-                        src="checked.png"
-                        height={20}
-                        alt="Your Alt Text"
-                        className="successIcons"
-                      />
-                    )} */}
                     {isEmailValid && !otpVisible && (
-                      <button
+                    <button style={{ background: 'var(--primary)' }}
                         type="button"
                         className="full-width-button"
                         onClick={handleGetOtp}
@@ -316,7 +201,7 @@ const ResetPassword = () => {
                           onChange={handleChanges}
                         />
                         {otp !== null && otp?.length === 6 && (
-                          <button
+                        <button style={{ background: 'var(--primary)' }}
                             type="button"
                             className="full-width-button"
                             onClick={verifyOtp}
@@ -328,56 +213,8 @@ const ResetPassword = () => {
                       </>
                     )}
                   </>
-                ) : (
-                  <>
-                    <input
-                      type="text"
-                      disabled={mobileVerified}
-                      value={mobile}
-                      className={
-                        mobileValid !== null && (mobileValid ? "valid" : "invalid")
-                      }
-                      placeholder="Mobile Number"
-                      onChange={(e) => handleMobileChange(e.target.value)}
-                    />
 
-                    {/* {mobileValid && !otpVisible && (
-                      <button
-                        type="button"
-                        className="full-width-button"
-                        onClick={handleGetOtp}
-                      >
-                        Get OTP
-                      </button>
-                    )}
-                    {otpVisible && mobileVerified !== true && (
-                      <>
-                        <input
-                          type="text"
-                          value={mobileOtp}
-                          className={
-                            mobileOtp !== null &&
-                            (mobileOtp.length === 6 ? "valid" : "invalid")
-                          }
-                          placeholder="Enter OTP"
-                          name="mobileOtp"
-                          onChange={handleChanges}
-                        />
-                        {mobileOtp !== null && mobileOtp.length === 6 && (
-                          <button
-                            type="button"
-                            id="mobileVerify"
-                            onClick={verifyOtp}
-                            style={{ whiteSpace: "noWrap" }}
-                          >
-                            Verify OTP
-                          </button>
-                        )}
-                      </>
-                    )} */}
-                  </>
-                )}
-                {(emailVerified || mobileVerified) && (
+                {(emailVerified) && (
                   <>
                     <input
                       name="newPassword"
@@ -415,7 +252,7 @@ const ResetPassword = () => {
                   </>
                 )}
                 
-                <button
+                <button style={{ background: 'var(--primary)' }}
                   className="full-width-button"
                   type="submit"
                   disabled={
@@ -437,6 +274,19 @@ const ResetPassword = () => {
               All Set? <a href="/login">Login in</a>
             </p>
           </div>
+        </div>
+      </div>
+      <div className="signup-left-container">
+        <div className="signup-left-content"><h1>Become a Task Creater</h1>
+          <p>Free to use, easy to track</p>
+          <div className="checks"><div><span class="tick"><i class="fas fa-check"></i></span> Create a Project</div>
+            <div><span class="tick"><i class="fas fa-check"></i></span> Add tasks to projects</div>
+            <div><span class="tick"><i class="fas fa-check"></i></span> Assign tasks to team members</div>
+            <div><span class="tick"><i class="fas fa-check"></i></span> Set project goals and milestones</div>
+            <div><span class="tick"><i class="fas fa-check"></i></span> Track your progress</div>
+            <div><span class="tick"><i class="fas fa-check"></i></span> Monitor task status and completion</div></div></div>
+        <div className="signup-image-container">
+          <img src="signup.png" alt="error" />
         </div>
       </div>
     </main>

@@ -6,30 +6,22 @@ import { useDispatch } from "react-redux";
 import { setToast } from "../../redux/AuthReducers/AuthReducer";
 import { ToastColors } from "../Toast/ToastColors";
 import axiosInstance from "../axiosInstance";
+import GoogleAuth from "../GoogleAuth/GoogleAuth";
 
 const Login = () => {
   const [inputs, setInputs] = useState({
     email: null,
-    mobile: null,
-    // mobileOtp: null,
     name: null,
     password: null,
-    // isMobileOtpSent: null,
-    // mobileVerified: null,
     isEmailValid: null,
-    isMobileValid: null,
     isNameValid: null,
     isPasswordValid: null,
   });
   const [loading, setLoading] = useState(false);
   const {
     email,
-    mobile,
     password,
-    // mobileOtp,
-    // mobileVerified,
     isEmailValid,
-    isMobileValid,
     isPasswordValid,
   } = inputs;
   const handleChanges = (e) => {
@@ -54,115 +46,14 @@ const Login = () => {
           ),
       }));
     }
-    if (e.target.name === "mobile") {
-      setInputs((prev) => ({
-        ...prev,
-        isMobileValid: /^[0-9]{10}$/.test(e.target.value),
-      }));
-    }
   };
   const [loginType, setLoginType] = useState("email");
-  const [otpVisible, setOtpVisible] = useState(false);
-
-  // const isEmailValid = /[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+/.test(email);
-  // const isPasswordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/.test(password);
 
   const isFormValid =
     (loginType === "email" && isEmailValid && isPasswordValid)
-    // ||
-    // (loginType === "mobile" && mobileVerified);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const handleLoginTypeChange = (type) => {
-    setLoginType(type);
-    setInputs({
-      email: null,
-      emailOtp: null,
-      mobile: null,
-      // mobileOtp: null,
-      name: null,
-      password: null,
-      isMobileOtpSent: null,
-      isEmailOtpSent: null,
-      emailVerified: null,
-      mobileVerified: null,
-      isEmailValid: null,
-      isMobileValid: null,
-      isNameValid: null,
-      isPasswordValid: null,
-    });
-    setOtpVisible(false);
-  };
-
-  // const sendMobileOtpF = async (e) => {
-  //   e.preventDefault();
-  //   e.target.disabled = true;
-  //   await ApiServices.sendMobileOtp({
-  //     phone: `+91${mobile}`,
-  //     type: "login",
-  //   })
-  //     .then((res) => {
-  //       dispatch(
-  //         setToast({
-  //           message: "OTP sent successfully !",
-  //           bgColor: ToastColors.success,
-  //           visible: "yes",
-  //         })
-  //       );
-  //       setOtpVisible(true);
-  //       // setIsEmailOtpSent(true);
-  //       setInputs((prev) => ({ ...prev, isMobileOtpSent: true }));
-  //     })
-  //     .catch((err) => {
-  //       dispatch(
-  //         setToast({
-  //           message: "OTP sent failed !",
-  //           bgColor: ToastColors.failure,
-  //           visible: "yes",
-  //         })
-  //       );
-  //       e.target.disabled = true;
-  //     });
-
-  // };
-
-  // const handleMobileChange = (value) => {
-  //   setMobile(value);
-  //   setIsMobileValid(/^[0-9]{10}$/.test(value));
-  // };
-
-  const verifyMobileOtp = async (e) => {
-    e.preventDefault();
-    await ApiServices.verifyOtp({
-      email: `+91${mobile}`,
-      // otp: mobileOtp,
-    })
-      .then((res) => {
-        dispatch(
-          setToast({
-            message: "Mobile verified successfully !",
-            bgColor: ToastColors.success,
-            visible: "yes",
-          })
-        );
-        // document.getElementById("mobileVerify").style.display = "none";
-        // document.getElementById("mobileOtpInput").disabled = true;
-        // setmobileVerified(true);
-        setInputs((prev) => ({ ...prev, mobileVerified: true }));
-      })
-      .catch((err) => {
-        dispatch(
-          setToast({
-            message: "Incorrect OTP",
-            bgColor: ToastColors.failure,
-            visible: "yes",
-          })
-        );
-      });
-
-  };
 
   const login = async (e) => {
     e.preventDefault();
@@ -184,7 +75,7 @@ const Login = () => {
         );
         localStorage.setItem("user", JSON.stringify(res.data));
         await axiosInstance.customFnAddTokenInHeader(res.data.accessToken);
-        window.location.href = "/dashboard";
+        window.location.href = "/home";
       })
       .catch((err) => {
         setLoading(false);
@@ -204,38 +95,6 @@ const Login = () => {
 
   };
 
-  const mobileLogin = async (e) => {
-    e.preventDefault();
-    e.target.disabled = true;
-    const obj = {
-      phone: mobile,
-      password: password,
-    };
-    await ApiServices.mobileLogin(obj)
-      .then(async (res) => {
-        dispatch(
-          setToast({
-            message: "User Logged In Successfully !",
-            bgColor: ToastColors.success,
-            visible: "yes",
-          })
-        );
-        localStorage.setItem("user", JSON.stringify(res.data));
-        await axiosInstance.customFnAddTokenInHeader(res.data.accessToken);
-        window.location.href = "/dashboard";
-      })
-      .catch((err) => {
-        e.target.disabled = false;
-        dispatch(
-          setToast({
-            message: err.response.data.message,
-            bgColor: ToastColors.failure,
-            visible: "yes",
-          })
-        );
-      });
-
-  };
   return (
     <>
       <main className="login-main-container">
@@ -243,37 +102,11 @@ const Login = () => {
           <div className="login-form-section">
             <div class="login-page">
               <div class="login-header">
-                <img
-                  class="login-logo"
-                  src="logo.png"
-                  alt="Your Alt Text"
-                  onClick={() => {
-                    navigate("/home");
-                  }}
-                />
+                <p>Login</p>
               </div>
               <div class="login-container">
-                <div class="tab-wrap">
-                  <input
-                    type="radio"
-                    id="tab1"
-                    name="tabGroup1"
-                    class="tab"
-                    checked={loginType === "email"}
-                    onClick={() => handleLoginTypeChange("email")}
-                  />
-                  <label for="tab1">Email</label>
-                  {/* <input
-                    onClick={() => handleLoginTypeChange("mobile")}
-                    type="radio"
-                    id="tab2"
-                    name="tabGroup1"
-                    class="tab"
-                  /> */}
-                  {/* <label for="tab2">Mobile</label> */}
-                </div>
+                
                 <form action="">
-                  {loginType === "email" ? (
                     <>
                       <input
                         type="email"
@@ -298,73 +131,13 @@ const Login = () => {
                         onChange={handleChanges}
                       />
                     </>
-                  ) : (
-                    <>
-                      <div className="input-button-row">
-                        <input
-                          type="number"
-                          value={mobile}
-                          className={
-                            isMobileValid !== null &&
-                            (isMobileValid ? "valid" : "invalid")
-                          }
-                          // disabled={mobileVerified}
-                          placeholder="Mobile Number"
-                          autoComplete="off"
-                          name="mobile"
-                          onChange={handleChanges}
-                        />
-                        
-                        {/* {isMobileValid && !otpVisible && (
-                            <button type="button"
-                              onClick={sendMobileOtpF}
-                            >
-                            Get OTP
-                          </button>
-                        )} */}
-                      </div>
-                      {/* {otpVisible && mobileVerified !== true && (
-                        <>
-                          <input
-                            type="text"
-                            value={mobileOtp}
-                            className={
-                              mobileOtp !== null &&
-                              (mobileOtp.length === 6 ? "valid" : "invalid")
-                            }
-                            placeholder="Enter OTP"
-                            name="mobileOtp"
-                            onChange={handleChanges}
-                          />
-                          {mobileOtp !== null && mobileOtp.length === 6 && (
-                            <button
-                              type="button"
-                              id="mobileVerify"
-                              onClick={verifyMobileOtp}
-                              style={{ whiteSpace: "noWrap" }}
-                            >
-                              Verify OTP
-                            </button>
-                          )}
-                        </>
-                      )} */}
-                    </>
-                  )}
-                  {loginType === "email" && <div className="passwordHint">
-                    <ul>
-                      <li className={password?.length >= 8 ? 'success' : 'failure'}>Password should be atleast 8 character length</li>
-                      <li className={/.*[A-Z].*/.test(password) ? 'success' : 'failure'}>Atleast one capital letter</li>
-                      <li className={/.*[a-z].*/.test(password) && password ? 'success' : 'failure'}>Atleast one small letter</li>
-                      <li className={/.*[!@#$%^&*()_+].*/.test(password) ? 'success' : 'failure'}>Atleast one special character (!@#$%^&*()_+)</li>
-                      <li className={/.*[0-9].*/.test(password) ? 'success' : 'failure'}>Atleast one Number</li>
-                    </ul>
-                  </div>}
+                  
                  
                   <button
-                    className="full-width-button"
+                    className=""
                     type="submit"
                     disabled={!isFormValid || loading}
-                    onClick={loginType === "email" ? login : mobileLogin}
+                    onClick={login}
                     style={{
                       whiteSpace: "nowrap",
                       position: "relative",
@@ -372,7 +145,8 @@ const Login = () => {
                       gap: "3px",
                       justifyContent: "center",
                       alignItems: "center",
-                      borderRadius: "10px",
+                      width: '10px', background: 'var(--primary)'
+                      // borderRadius: "10px",
                     }}
                   >
                     {loading ? (
@@ -392,10 +166,7 @@ const Login = () => {
                       </div>
                     ) : (
                       <>
-                        <i
-                          className="fas fa-sign-in-alt"
-                          style={{ marginRight: "5px", top: "-5px" }}
-                        ></i>{" "}
+                        
                         Login
                       </>
                     )}
@@ -405,7 +176,7 @@ const Login = () => {
               <div className="login-header">
                 <div>
                   <hr />
-                  <p>OR</p>
+                  <p>or</p>
                   <hr />
                 </div>
               </div>
@@ -415,7 +186,21 @@ const Login = () => {
               <p className="login-option-text" style={{ zIndex: 999 }}>
                 <a href="/forgotpassword">Forgot Password?</a>
               </p>
+              <GoogleAuth />
             </div>
+          </div>
+        </div>
+        <div className="signup-left-container">
+          <div className="signup-left-content"><h1>Become a Task Creater</h1>
+            <p>Free to use, easy to track</p>
+            <div className="checks"><div><span class="tick"><i class="fas fa-check"></i></span> Create a Project</div>
+              <div><span class="tick"><i class="fas fa-check"></i></span> Add tasks to projects</div>
+              <div><span class="tick"><i class="fas fa-check"></i></span> Assign tasks to team members</div>
+              <div><span class="tick"><i class="fas fa-check"></i></span> Set project goals and milestones</div>
+              <div><span class="tick"><i class="fas fa-check"></i></span> Track your progress</div>
+              <div><span class="tick"><i class="fas fa-check"></i></span> Monitor task status and completion</div></div></div>
+          <div className="signup-image-container">
+            <img src="signup.png" alt="error" />
           </div>
         </div>
       </main>

@@ -1,0 +1,9 @@
+.nameGenerator{
+    background: rgb(116, 116, 193);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    padding: 5px;
+}

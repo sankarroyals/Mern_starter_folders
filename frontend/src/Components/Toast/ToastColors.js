@@ -1,4 +1,4 @@
 export const ToastColors = {
-    success: '#4CBB17',
+    success: '#04aa6d',
     failure: 'red'
 }

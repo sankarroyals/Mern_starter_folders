@@ -14,6 +14,7 @@ const dotenv = require("dotenv");
 const Userverify = require("../models/OtpModel");
 dotenv.config({ path: "../config.env" });
 const twilio = require("twilio");
+const send_mail = require("../helpers/EmailSending");
 
 exports.register = async (req, res, next) => {
   try {
@@ -70,6 +71,57 @@ exports.register = async (req, res, next) => {
     );
 
     return res.send({ accessToken: accessToken, refreshToken: refreshToken });
+  } catch (err) {
+    if (err.isJoi == true) err.status = 422;
+    next(err);
+  }
+};
+
+
+exports.googleSSORegister = async (req, res, next) => {
+  try {
+    const { email, userName, role } = req.body;
+
+    // Checking user already exist or not
+    const userDoesExist = await User.findOne({ email: email });
+    if (!userDoesExist) {
+      // hashing password
+      const salt = await bcrypt.genSalt(10);
+      const passwordHashing = await bcrypt.hash(
+        `${userName}@TFE1`,
+        salt
+      );
+      const newUser = await User.create({
+        email, role,
+        password: passwordHashing,
+        phone: '',
+        userName,
+      });
+      const accessToken = await signAccessToken(
+        { email: email, user_id: newUser._id },
+        `${newUser._id}`
+      );
+      const refreshToken = await signRefreshToken(
+        { email: email, user_id: newUser._id },
+        `${newUser._id}`
+      );
+      await send_mail(email, 'starter file System generated password for you', `Your temporary password is <b>${userName}@TFE1</b>. If you want to change password please logout and change that in forgot password page`, authImage)
+      await send_mail(process.env.ADMIN_EMAIL, 'New User joined!', `A new user <b>${userName}</b> is joined into our app. Please assign him a project.`, notificationImage)
+
+      return res.send({ accessToken: accessToken, refreshToken: refreshToken });
+    }
+
+    const accessToken = await signAccessToken(
+      { email: email, user_id: userDoesExist._id },
+      `${userDoesExist._id}`
+    );
+    const refreshToken = await signRefreshToken(
+      { email: email, user_id: userDoesExist._id },
+      `${userDoesExist._id}`
+    );
+
+    return res.send({ accessToken: accessToken, refreshToken: refreshToken });
+
   } catch (err) {
     if (err.isJoi == true) err.status = 422;
     next(err);
